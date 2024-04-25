@@ -1,0 +1,17 @@
+#!/usr/bin/env bats
+
+bats_load_library "bats-support"
+bats_load_library "bats-assert"
+
+setup() {
+	cp -r examples/capi/host_functions/parse_json/* "$BATS_FILE_TMPDIR/"
+	cd "$BATS_FILE_TMPDIR" || exit 1
+}
+
+@test "build and run parse_json example" {
+	make
+	run ./host_function
+	assert_success
+	assert_output --partial "Success"
+	make clean
+}

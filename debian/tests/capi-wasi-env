@@ -1,0 +1,30 @@
+#!/usr/bin/env bats
+
+bats_load_library "bats-support"
+bats_load_library "bats-assert"
+
+setup() {
+	cp -r examples/capi/wasi-env/* "$BATS_FILE_TMPDIR/"
+	cd "$BATS_FILE_TMPDIR" || exit 1
+}
+
+@test "build wasi_get_env.wasm with cargo/rustc" {
+	# set the linker to "lld", rather than the default "rust-lld", as
+	# /usr/bin/rust-lld points to a versioned lld (e.g. lld-15) that may
+	# differ from the current default (i.e. what /usr/bin/lld points to,
+	# like lld-14 in this case), and without rustc Depending on it
+	RUSTFLAGS="-C linker=lld" cargo build --offline --manifest-path=rust/Cargo.toml --release --target=wasm32-wasi
+	cp rust/target/wasm32-wasi/release/wasi_get_env.wasm .
+}
+
+@test "build set_wasm_env with gcc" {
+	gcc set_wasi_env.c -o set_wasm_env -lwasmedge
+	run ./set_wasm_env argv1 argv2 argv3
+	assert_success
+	assert_output --partial "ENV1: VAL1"
+	assert_output --partial "ENV2: VAL2"
+	assert_output --partial "ENV3: VAL3"
+	assert_output --partial "argv1"
+	assert_output --partial "argv2"
+	assert_output --partial "argv3"
+}

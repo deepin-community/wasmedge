@@ -1,0 +1,57 @@
+# This test suite uses the "bats" bash automated testing system, to enhance
+# readability and avoid hand-coding e.g. multi-line partial output assertions.
+#
+# bats is a thin layer on top of bash and thus the learning curve for drive-by
+# contributions is hopefully not too steep for an average Debian contributor.
+#
+# Please use shellcheck and shfmt (both supporting bats natively) when
+# modifying any files in this test suite.
+
+Tests: basic
+Depends:
+  bats, bats-support, bats-assert,
+  wasmedge,
+  wabt,
+
+Tests: capi-mandelbrot
+Depends:
+  bats, bats-support, bats-assert,
+  libwasmedge-dev,
+  wasmedge,
+  build-essential,
+  clang,
+  lld,
+  libclang-rt-dev-wasm32,
+  wasi-libc,
+  wabt,
+
+Tests: capi-parse-json
+Depends:
+  bats, bats-support, bats-assert,
+  libwasmedge-dev,
+  build-essential,
+  libjson-c-dev,
+  wabt,
+
+Tests: capi-wasi-env
+Depends:
+  bats, bats-support, bats-assert,
+  libwasmedge-dev,
+  build-essential,
+  rustc,
+  lld,
+  cargo,
+  libstd-rust-dev-wasm32,
+
+Tests: embed-cxx
+Depends:
+  bats, bats-support, bats-assert,
+  libwasmedge-dev,
+  build-essential,
+  clang,
+  lld,
+  libclang-rt-dev-wasm32,
+  wasi-libc,
+  libc++-dev-wasm32,
+# disabled due to clang bug #1052002
+Restrictions: flaky

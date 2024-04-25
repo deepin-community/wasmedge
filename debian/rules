@@ -1,4 +1,31 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/buildflags.mk
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+
 %:
 	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		-DWASMEDGE_BUILD_PLUGINS=OFF
+
+MANPAGES_SRC = $(wildcard debian/man/*.md)
+MANPAGES_OUT = $(patsubst debian/man/%.md, debian/man/%, $(MANPAGES_SRC))
+
+debian/man/%.1: debian/man/%.1.md debian/changelog
+	lowdown -s -Tman \
+		-M title:$(basename $(notdir $@)) \
+		-M section:$(subst .,,$(suffix $@)) \
+		-M date:$(if $(SOURCE_DATE_EPOCH),$(shell date -I -u -d "@$(SOURCE_DATE_EPOCH)"),$(shell date -I -u)) \
+		-o $@ $<
+
+execute_after_dh_auto_build: $(MANPAGES_OUT)
+
+execute_after_dh_installman:
+	dh_installman $(MANPAGES_OUT)
+
+execute_after_dh_auto_clean:
+	dh_clean $(MANPAGES_OUT)

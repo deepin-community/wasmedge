@@ -1,15 +1,67 @@
-Source: template-repository
-Section: unknown
+Source: wasmedge
+Section: web
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: Faidon Liambotis <paravoid@debian.org>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ libspdlog-dev,
+ llvm-dev,
+ liblld-dev,
+ lowdown,
+Standards-Version: 4.6.2
+Homepage: https://wasmedge.org/
+Vcs-Browser: https://salsa.debian.org/debian/wasmedge
+Vcs-Git: https://salsa.debian.org/debian/wasmedge.git
 
-Package: template-repository
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Package: wasmedge
+Architecture: amd64 arm64
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ libwasmedge0 (= ${binary:Version}),
+Description: standalone runtime for WebAssembly
+ WasmEdge is a lightweight, high-performance, and extensible WebAssembly
+ runtime for cloud native, edge, and decentralized applications.
+ .
+ It powers serverless apps, embedded functions, microservices, smart contracts,
+ and IoT devices.
+ .
+ This package provides the general WASM runtime ("wasmedge run") as well as the
+ ahead-of-time WASM compiler ("wasmedge compile").
+
+Package: libwasmedge0
+Section: libs
+Architecture: amd64 arm64
+Multi-Arch: same
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: standalone runtime for WebAssembly (C API shared library)
+ WasmEdge is a lightweight, high-performance, and extensible WebAssembly
+ runtime for cloud native, edge, and decentralized applications.
+ .
+ It powers serverless apps, embedded functions, microservices, smart contracts,
+ and IoT devices.
+ .
+ This package provides the C API shared library.
+
+Package: libwasmedge-dev
+Section: libdevel
+Architecture: amd64 arm64
+Multi-Arch: same
+Depends:
+ ${misc:Depends},
+ libwasmedge0 (= ${binary:Version}),
+Description: standalone runtime for WebAssembly (development headers)
+ WasmEdge is a lightweight, high-performance, and extensible WebAssembly
+ runtime for cloud native, edge, and decentralized applications.
+ .
+ It powers serverless apps, embedded functions, microservices, smart contracts,
+ and IoT devices.
+ .
+ This package provides the C API shared library development headers.
+
+# A docs package for the book can be generated after mdBook is packaged for
+# Debian; see #1004481 for the RFP
