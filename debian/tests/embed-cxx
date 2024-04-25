@@ -1,0 +1,28 @@
+#!/usr/bin/env bats
+
+bats_load_library "bats-support"
+bats_load_library "bats-assert"
+
+setup() {
+	cp -r examples/embed_cxx/* "$BATS_FILE_TMPDIR/"
+	cd "$BATS_FILE_TMPDIR" || exit 1
+}
+
+@test "build fibonacci.cpp to wasm" {
+	clang++ --target=wasm32-wasi -o fibonacci.wasm -mexec-model=reactor script/fibonacci.cpp
+}
+
+@test "build fibonacci/cpp to native" {
+	g++ -c -O2 script/fibonacci.cpp
+}
+
+@test "build embed_cxx" {
+	g++ -O2 -o embed_cxx -lwasmedge main.cpp fibonacci.o -lwasmedge
+}
+
+@test "run embed_cxx and test for valid output" {
+	run ./embed_cxx
+	assert_success
+	assert_line --index 0 --partial "3524578"
+	assert_line --index 2 --partial "3524578"
+}

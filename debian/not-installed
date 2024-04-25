@@ -1,0 +1,2 @@
+# replaced by "wasmedge compile" as of 0.13.0
+usr/bin/wasmedgec

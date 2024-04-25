@@ -1,5 +1,57 @@
-template-repository (1.0-1) unstable; urgency=medium
+wasmedge (0.13.5+dfsg-1) unstable; urgency=medium
 
-  * Initial release
+  * New upstream release.
+    - Drop patch llama-cpp-gcc-13, was an upstream backport.
+    - Add new symbols to libwasmedge0.symbols.
+    - Update debian/copyright to reflect a source tree move.
+  * Drop zlib1g-dev build dependency, as this was for LLD, which has now
+    gained the build dependency itself. (cf. #1047718)
+  * Mark the embed-cxx autopkgtest as flaky, as clang++-16 is currently buggy
+    and cannot compile code for the wasm32-wasi target. (cf. #1052002)
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Faidon Liambotis <paravoid@debian.org>  Fri, 10 Nov 2023 16:37:25 +0200
+
+wasmedge (0.13.4+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Drop patch Drop-inline-from-Fault-emitFault, merged upstream.
+  * Update debian/copyright with 2023 dates and newly shipped code.
+  * Backport an upstream llama.cpp patch to fix a FTBFS with g++ 13.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Tue, 12 Sep 2023 17:30:20 +0300
+
+wasmedge (0.13.3+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Drop libboost-all-dev dependency, as Boost was dropped as a dependency in
+    the 0.13.0 release.
+  * Fix FTBFS with gcc-13, by removing "inline" from Fault::emitFault.
+    (Closes: #1042193)
+
+ -- Faidon Liambotis <paravoid@debian.org>  Mon, 31 Jul 2023 16:47:02 +0300
+
+wasmedge (0.13.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Drop several precompiled wasm files from Files-Excluded, as these have
+      been dropped upstream at our request (see upstream #1869).
+    - Add new symbols to libwasmedge0.symbols.
+  * Drop wasmedgec, replaced upstream by "wasmedge compile".
+    - Rename the manpage to wasmedge-compile(1) and adjust all references in
+      wasmedge(1).
+    - Adjust the package description & autopkgtests to refer to "wasmedge
+      compile" (and "wasmedge run", where applicable) instead.
+    - Stop shipping /usr/bin/wasmedgec.
+  * autopkgtests: fix a failure in the "capi-wasi-env" test when build with a
+    newer rustc, that ships with rust-lld -> lld-15, while llvm-defaults is
+    still pointing to lld-14. See the inline comment and/or git commit message
+    for more details.
+  * Upload to unstable.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Wed, 12 Jul 2023 19:14:47 +0300
+
+wasmedge (0.12.0~alpha2+dfsg-1) experimental; urgency=medium
+
+  * Initial release. (Closes: #1003128)
+
+ -- Faidon Liambotis <paravoid@debian.org>  Tue, 21 Mar 2023 17:34:06 +0200

@@ -1,0 +1,46 @@
+#!/usr/bin/env bats
+
+bats_load_library "bats-support"
+bats_load_library "bats-assert"
+
+setup() {
+	cp -a examples/wasm/*.wat "$BATS_FILE_TMPDIR/"
+	cd "$BATS_FILE_TMPDIR" || exit 1
+}
+
+@test "factorial: compile with wat2wasm" {
+	wat2wasm -o factorial.wasm factorial.wat
+}
+
+@test "factorial: run with wasmedge" {
+	run wasmedge --reactor factorial.wasm fac 12
+	assert_success
+	assert_output "479001600"
+}
+
+@test "factorial: precompile with wasmedge compile and run with wasmedge" {
+	run wasmedge compile factorial.wasm factorial.so
+	assert_success
+	run wasmedge run --reactor factorial.so fac 12
+	assert_success
+	assert_output "479001600"
+}
+
+@test "fibonacci: compile with wat2wasm" {
+	sed -i 's/get_local/local.get/' fibonacci.wat
+	wat2wasm -o fibonacci.wasm fibonacci.wat
+}
+
+@test "fibonacci: run with wasmedge" {
+	run wasmedge --reactor fibonacci.wasm fib 8
+	assert_success
+	assert_output "34"
+}
+
+@test "fibonacci: precompile with wasmedge compile and run with wasmedge" {
+	run wasmedge compile fibonacci.wasm fibonacci.so
+	assert_success
+	run wasmedge run --reactor fibonacci.so fib 8
+	assert_success
+	assert_output "34"
+}

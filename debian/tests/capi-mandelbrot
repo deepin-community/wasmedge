@@ -1,0 +1,19 @@
+#!/usr/bin/env bats
+
+bats_load_library "bats-support"
+bats_load_library "bats-assert"
+
+setup() {
+	cp -r examples/capi/mandelbrot-set-in-threads/* "$BATS_FILE_TMPDIR/"
+	cd "$BATS_FILE_TMPDIR" || exit 1
+}
+
+@test "build and run mandelbrot-set-in-threads example" {
+	sed -i '/--features/ s/$/,sign-ext/' Makefile
+	make
+	run ./main
+	assert_success
+	assert_output --partial "ok"
+	refute_output --partial "Error"
+	make clean
+}
