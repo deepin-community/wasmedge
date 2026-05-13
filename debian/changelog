@@ -1,3 +1,13 @@
+wasmedge (0.13.5+dfsg-1deepin1) unstable; urgency=medium
+
+  * Fix CVE-2025-69261: Fix integer overflow in MemoryInstance::getSpan.
+    The multiplication sizeof(T) * Size can wrap around, causing
+    checkAccessBound() to incorrectly allow the access. This leads to
+    a segmentation fault.          This is a backport of upstream commit
+    37cc9fa19bd23edbbdaa9252059b17f191fa4d17.
+
+ -- deepin-ci-robot <packages@deepin.org>  Wed, 13 May 2026 14:37:31 +0800
+
 wasmedge (0.13.5+dfsg-1deepin0) unstable; urgency=medium
 
   * No source change upload against GCC 12.
